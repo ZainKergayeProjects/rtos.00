@@ -1,0 +1,48 @@
+{
+  "nodes": {
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1787394516,
+        "narHash": "sha256-pRGOQSClnXNI2iLUG6DYpsGvYcuw0drOutVZFTJNw90=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "c8f90650c15282fa8656a041bfbbd2403997a9a7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "nixpkgs": "nixpkgs",
+        "rtos-nix": "rtos-nix"
+      }
+    },
+    "rtos-nix": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1787595499,
+        "narHash": "sha256-Xrtp+8ZEOZDP4LYoKwvY5jPVbn3+lhTaVIHOdfRA5Zo=",
+        "owner": "ZainKergayeProjects",
+        "repo": "rtos.nix",
+        "rev": "7065138932a00a10421c45c62487cea2c8e3e9dc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ZainKergayeProjects",
+        "repo": "rtos.nix",
+        "type": "github"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
