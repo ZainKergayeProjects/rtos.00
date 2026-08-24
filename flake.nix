@@ -20,7 +20,22 @@
     in
     {
       packages = forAllSystems (system: {
-        default = pkgs.${system}.hello;
+        default = pkgs.${system}.stdenv.mkDerivation {
+          name = "lab00";
+          src = ./.;
+          buildInputs = with pkgs.${system}; [
+            cmake
+            gcc-arm-embedded
+          ];
+          phases = [ "installPhase" ];
+          installPhase = ''
+						mkdir -p $out
+						cmake -B $out -S $src/
+						cd $out
+						cmake --build . --target all
+          '';
+        };
+
       });
 
       devShells = forAllSystems (system: {

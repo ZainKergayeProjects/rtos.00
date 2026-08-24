@@ -1,5 +1,23 @@
 {
   "nodes": {
+    "freertos": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1723126959,
+        "narHash": "sha256-sWO+gtPfiEHFitXYxYDYzFeZyXH3k+4gupYznVJJGPg=",
+        "ref": "refs/heads/main",
+        "rev": "4f7299d6ea746b27a9dd19e87af568e34bd65b15",
+        "revCount": 3483,
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/raspberrypi/FreeRTOS-Kernel.git"
+      },
+      "original": {
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/raspberrypi/FreeRTOS-Kernel.git"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1787394516,
@@ -24,16 +42,17 @@
     },
     "rtos-nix": {
       "inputs": {
+        "freertos": "freertos",
         "nixpkgs": [
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1787595499,
-        "narHash": "sha256-Xrtp+8ZEOZDP4LYoKwvY5jPVbn3+lhTaVIHOdfRA5Zo=",
+        "lastModified": 1787603022,
+        "narHash": "sha256-XlIp+E+8TySUmXuT0MipMGP4s9OaFoG6UCA3IDb1RNk=",
         "owner": "ZainKergayeProjects",
         "repo": "rtos.nix",
-        "rev": "7065138932a00a10421c45c62487cea2c8e3e9dc",
+        "rev": "bcac0f614224d48ccd5e879c8e3304694788e262",
         "type": "github"
       },
       "original": {
