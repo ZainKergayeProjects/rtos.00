@@ -4,3 +4,6 @@
 [submodule "lib/pico-sdk"]
 	path = lib/pico-sdk
 	url = git@github.com:raspberrypi/pico-sdk.git
+[submodule "lib/unity"]
+	path = lib/unity
+	url = git@github.com:ThrowTheSwitch/Unity.git

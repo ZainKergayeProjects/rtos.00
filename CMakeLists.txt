@@ -28,6 +28,16 @@ else()
   set(FREERTOS_PATH lib/freertos)
 endif()
 
+if(DEFINED UNITY_PATH)
+  # Already defined, e.g. -D flag
+elseif(DEFINED ENV{UNITY_PATH})
+  # Defined in an environment variable
+  set(UNITY_PATH $ENV{UNITY_PATH})
+else()
+  # Default to the submodule
+  set(UNITY_PATH lib/unity)
+endif()
+
 if(DEFINED ENV{OPENOCD_PATH})
   set(OPENOCD_PATH $ENV{OPENOCD_PATH})
 endif()
@@ -67,4 +77,4 @@ include_directories(${CMAKE_CURRENT_LIST_DIR}/include)
 add_subdirectory(src)
 
 # The test configuration is inside the test directory. include(CTest)
-# add_subdirectory(test)
+add_subdirectory(test)
