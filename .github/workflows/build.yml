@@ -4,11 +4,16 @@ on: [push, pull_request]
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
-  PICO_SDK_PATH: /usr/local/share/pico/pico-sdk
-  FREERTOS_KERNEL_PATH: /usr/local/share/pico/FreeRTOS-Kernel
-  UNITY_PATH: /usr/local/share/pico/Unity
-  OPENOCD_PATH: /usr/share/openocd
-  PICO_TOOLCHAIN_PATH: /usr/bin
+  PICO_SDK_REPO: https://github.com/raspberrypi/pico-sdk.git
+  PICO_SDK_REF: master
+  FREERTOS_KERNEL_REPO: https://github.com/FreeRTOS/FreeRTOS-Kernel.git
+  FREERTOS_KERNEL_REF: main
+  UNITY_REPO: https://github.com/ThrowTheSwitch/Unity.git
+  UNITY_REF: master
+  OPENOCD_REPO: https://github.com/openocd-org/openocd.git
+  OPENOCD_REF: master
+  PICO_TOOLCHAIN_REPO: https://github.com/raspberrypi/pico-sdk.git
+  PICO_TOOLCHAIN_REF: master
 
 jobs:
   build:
@@ -24,36 +29,46 @@ jobs:
         with:
           path: ${{github.workspace}}/source
 
-      - name: Create Build Environment
-        # Some projects don't allow in-source building, so create a separate build directory
-        # We'll use this as our working directory for all subsequent commands
+      - name: Clone Dependencies
         working-directory: ${{github.workspace}}
-        run:  cmake -E make_directory ${{github.workspace}}/build
+        run: |
+          git clone --branch ${{ env.PICO_SDK_REF }} ${{ env.PICO_SDK_REPO }} pico-sdk
+          git clone --branch ${{ env.FREERTOS_KERNEL_REF }} ${{ env.FREERTOS_KERNEL_REPO }} FreeRTOS-Kernel
+          git clone --branch ${{ env.UNITY_REF }} ${{ env.UNITY_REPO }} Unity
+          git clone --branch ${{ env.OPENOCD_REF }} ${{ env.OPENOCD_REPO }} openocd
+          git clone --branch ${{ env.PICO_TOOLCHAIN_REF }} ${{ env.PICO_TOOLCHAIN_REPO }} pico-toolchain
+
+      - name: Create Build Environment
+        working-directory: ${{github.workspace}}
+        run: cmake -E make_directory ${{github.workspace}}/build
 
       - name: Configure CMake
-        # Use a bash shell so we can use the same syntax for environment variable
-        # access regardless of the host operating system
         shell: bash
         working-directory: ${{github.workspace}}
-        # Note the current convention is to use the -S and -B options here to specify source
-        # and build directories, but this is only available with CMake 3.13 and higher.
-        # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
-        run: cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -B ./build ./source
+        run: |
+          cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+            -DPICO_SDK_PATH=${{github.workspace}}/pico-sdk \
+            -DFREERTOS_KERNEL_PATH=${{github.workspace}}/FreeRTOS-Kernel \
+            -DUNITY_PATH=${{github.workspace}}/Unity \
+            -DOPENOCD_PATH=${{github.workspace}}/openocd \
+            -B ./build ./source
 
       - name: Build
         working-directory: ${{github.workspace}}
         shell: bash
-        # Execute the build.  You can specify a specific target with "--target <NAME>"
         run: cmake --build ./build --config $BUILD_TYPE --parallel $(nproc)
 
       - name: Flash
-        # This follows the convention of where we put tests, but it can be anything
         working-directory: ${{github.workspace}}/build/test
         shell: bash
-        # Make sure to set the correct elf file
-        run: openocd -s $OPENOCD_PATH -f interface/cmsis-dap.cfg -f target/rp2040.cfg -c 'adapter speed 5000; program "mytest.elf" verify reset exit'
+        run: |
+          ${{github.workspace}}/openocd/src/openocd \
+            -f ${{github.workspace}}/openocd/tcl/interface/cmsis-dap.cfg \
+            -f ${{github.workspace}}/openocd/tcl/target/rp2040.cfg \
+            -c 'adapter speed 5000; program "mytest.elf" verify reset exit'
+
       - name: Test
         working-directory: ${{github.workspace}}
         shell: bash
-        run: python3 /usr/local/share/pico/unity_checker.py
+        run: python3 ${{github.workspace}}/Unity/unity_checker.py
 
