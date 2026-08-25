@@ -1,0 +1,61 @@
+name: Unit Tests
+on: [push, pull_request]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout with submodules
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          path: ${{github.workspace}}/source
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            cmake \
+            build-essential \
+            gcc-arm-none-eabi \
+            libnewlib-arm-none-eabi \
+            libstdc++-arm-none-eabi-newlib \
+            openocd \
+            python3
+
+      - name: Create Build Environment
+        working-directory: ${{github.workspace}}
+        run: cmake -E make_directory ${{github.workspace}}/build
+
+      - name: Configure CMake
+        working-directory: ${{ github.workspace }}/source
+        run: |
+          cmake \
+            -S . \
+            -B "${{ github.workspace }}/build" \
+            -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" \
+            -DBUILD_TESTING=ON
+
+      - name: Build
+        run: |
+          cmake --build "${{ github.workspace }}/build" \
+            --config "${BUILD_TYPE}" \
+            --parallel "$(nproc)" \
+            --target all
+
+      - name: Show registered tests
+        run: |
+          grep BUILD_TESTING "${{ github.workspace }}/build/CMakeCache.txt" || true
+          find "${{ github.workspace }}/build" -name CTestTestfile.cmake -print
+          ctest --test-dir "${{ github.workspace }}/build" --show-only
+
+      - name: Test
+        run: |
+          ctest \
+            --test-dir "${{ github.workspace }}/build" \
+            --build-config "${BUILD_TYPE}" \
+            --output-on-failure
+

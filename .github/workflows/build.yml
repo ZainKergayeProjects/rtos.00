@@ -1,4 +1,4 @@
-name: CMake
+name: Build firmware
 on: [push, pull_request]
 
 env:
@@ -42,18 +42,3 @@ jobs:
         working-directory: ${{github.workspace}}/build
         shell: bash
         run: cmake --build . --config $BUILD_TYPE --parallel $(nproc)
-
-      - name: Flash
-        working-directory: ${{github.workspace}}/build/test
-        shell: bash
-        run: |
-          openocd \
-            -f interface/cmsis-dap.cfg \
-            -f target/rp2040.cfg \
-            -c 'adapter speed 5000; program "mytest.elf" verify reset exit'
-
-      - name: Test
-        working-directory: ${{github.workspace}}/build
-        shell: bash
-        run: ctest --output-on-failure
-
