@@ -8,14 +8,15 @@ endif()
 set(sdkVersion 2.0.0)
 set(toolchainVersion 13_2_Rel1)
 set(picotoolVersion 2.0.0)
+
 if(DEFINED PICO_SDK_PATH)
   # Already defined, e.g. -D flag
 elseif(DEFINED ENV{PICO_SDK_PATH})
   # Defined in an environment variable
   set(PICO_SDK_PATH $ENV{PICO_SDK_PATH})
 else()
-  # Use the submodule
-  set(PICO_SDK_PATH lib/pico-sdk)
+  # Use the submodule (make it absolute)
+  set(PICO_SDK_PATH "${CMAKE_CURRENT_SOURCE_DIR}/lib/pico-sdk")
 endif()
 
 if(DEFINED FREERTOS_PATH)
@@ -24,8 +25,8 @@ elseif(DEFINED ENV{FREERTOS_PATH})
   # Defined in an environment variable
   set(FREERTOS_PATH $ENV{FREERTOS_PATH})
 else()
-  # Default use the submodule.
-  set(FREERTOS_PATH lib/freertos)
+  # Default use the submodule (make it absolute)
+  set(FREERTOS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/lib/freertos")
 endif()
 
 if(DEFINED UNITY_PATH)
@@ -34,8 +35,8 @@ elseif(DEFINED ENV{UNITY_PATH})
   # Defined in an environment variable
   set(UNITY_PATH $ENV{UNITY_PATH})
 else()
-  # Default to the submodule
-  set(UNITY_PATH lib/unity)
+  # Default to the submodule (make it absolute)
+  set(UNITY_PATH "${CMAKE_CURRENT_SOURCE_DIR}/lib/unity")
 endif()
 
 if(DEFINED ENV{OPENOCD_PATH})
