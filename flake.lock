@@ -49,11 +49,11 @@
         "unity": "unity"
       },
       "locked": {
-        "lastModified": 1787689908,
-        "narHash": "sha256-t8ptgdRdiM7aRhgs5WxB0Ew0MfnXkkWRJz4j4NhPoAw=",
+        "lastModified": 1787711664,
+        "narHash": "sha256-IttHIaxC0LiFHz6Ydf5G6nW8FNF6z9LK+pexjFPIzK4=",
         "owner": "ZainKergayeProjects",
         "repo": "rtos.nix",
-        "rev": "1ae3229577f3254adf9668ac1862fadb3c8588e7",
+        "rev": "d3f50d22fac57dcd46b73a21d1c0250809d81de3",
         "type": "github"
       },
       "original": {
